@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Smart Museum Guide</title>
+
+<link rel="stylesheet" href="style.css">
+
+<!-- Three.js 3D Museum -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+</head>
+
+
+<body>
+
+
+<!-- NAVBAR -->
+
+<nav>
+
+<h1>🏛 Smart Museum Guide</h1>
+
+
+<div class="nav-buttons">
+
+
+<button onclick="toggleDarkMode()" id="themeBtn">
+🌙 Dark Mode
+</button>
+
+
+<button onclick="showMap()">
+🗺 Map
+</button>
+
+
+<button onclick="openAI()">
+🤖 AI Guide
+</button>
+
+
+<button onclick="startQuiz()">
+🏆 Quiz
+</button>
+
+
+<button onclick="openVirtualMuseum()">
+🏛 3D Museum
+</button>
+
+
+<button onclick="showBookings()">
+🎟 Tickets
+</button>
+
+
+</div>
+
+</nav>
+
+
+
+
+
+<!-- HERO -->
+
+<section class="hero">
+
+
+<h1>
+Explore World History Digitally
+</h1>
+
+
+<p>
+Discover historic art, rare artifacts and ancient sculptures.
+</p>
+
+
+<button onclick="scrollToCollection()">
+
+Explore Museum
+
+</button>
+
+
+</section>
+
+
+
+
+
+
+
+<!-- VISITOR STATS -->
+
+
+<section class="stats">
+
+
+<div>
+
+<h2 id="visitorCount">
+0
+</h2>
+
+<p>
+Visitors Today
+</p>
+
+</div>
+
+
+
+<div>
+
+<h2>
+500+
+</h2>
+
+<p>
+Rare Artifacts
+</p>
+
+</div>
+
+
+
+<div>
+
+<h2>
+200+
+</h2>
+
+<p>
+Ancient Sculptures
+</p>
+
+</div>
+
+
+</section>
+
+
+
+
+
+
+
+
+<!-- SEARCH -->
+
+<section class="controls">
+
+
+<input
+id="searchBox"
+placeholder="🔍 Search historical objects..."
+onkeyup="searchExhibits()"
+>
+
+
+
+<select id="categoryFilter" onchange="filterCategory()">
+
+
+<option value="all">
+All Categories
+</option>
+
+
+<option value="Historic Art">
+Historic Art
+</option>
+
+
+<option value="Rare Artifact">
+Rare Artifact
+</option>
+
+
+<option value="Ancient Sculpture">
+Ancient Sculpture
+</option>
+
+
+</select>
+
+
+</section>
+
+
+
+
+
+
+
+
+<!-- OBJECT COLLECTION -->
+
+
+<section id="museumContainer" class="museum">
+
+
+</section>
+
+
+
+
+
+
+
+
+
+<!-- FAVORITES -->
+
+
+<section class="section">
+
+
+<h2>
+❤️ Favourite Objects
+</h2>
+
+
+<ul id="favoritesList">
+
+</ul>
+
+
+</section>
+
+
+
+
+
+
+
+
+
+<!-- 3D MUSEUM -->
+
+
+<div id="virtualMuseum">
+
+</div>
+
+
+
+
+
+
+
+
+
+<!-- MAP POPUP -->
+
+
+<div id="mapModal" class="popup">
+
+
+<div class="popup-content">
+
+
+<span class="close" onclick="closeMap()">
+✖
+</span>
+
+
+<h2>
+🗺 Interactive Museum Map
+</h2>
+
+
+
+<div class="museum-map">
+
+
+<button onclick="enterRoom('Historic Art Gallery')">
+
+🎨 Historic Art Gallery
+
+</button>
+
+
+<button onclick="enterRoom('Rare Artifact Hall')">
+
+🏺 Rare Artifact Hall
+
+</button>
+
+
+<button onclick="enterRoom('Ancient Sculpture Hall')">
+
+🗿 Ancient Sculpture Hall
+
+</button>
+
+
+<button onclick="enterRoom('Gift Shop')">
+
+🎁 Gift Shop
+
+</button>
+
+
+</div>
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+
+
+
+
+<!-- AI GUIDE -->
+
+
+<div id="aiModal" class="popup">
+
+
+<div class="popup-content">
+
+
+<span class="close" onclick="closeAI()">
+
+✖
+
+</span>
+
+
+<h2>
+🤖 AI Museum Guide
+</h2>
+
+
+
+<p id="aiAnswer">
+
+Ask me about any historical object.
+
+</p>
+
+
+
+<input
+id="aiQuestion"
+placeholder="Example: Tell me about Mona Lisa"
+>
+
+
+
+<button onclick="askAI()">
+
+Ask
+
+</button>
+
+
+
+</div>
+
+</div>
+
+
+
+
+
+
+
+
+
+<!-- OBJECT DETAILS -->
+
+
+<div id="popup" class="popup">
+
+
+<div class="popup-content">
+
+
+<span class="close" onclick="closePopup()">
+
+✖
+
+</span>
+
+
+
+<h2 id="title">
+
+</h2>
+
+
+
+<img id="objectImage">
+
+
+
+<p id="description">
+
+</p>
+
+
+
+<button onclick="speakInfo()">
+
+🔊 Audio Guide
+
+</button>
+
+
+<button onclick="openAI()">
+
+🤖 Ask AI
+
+</button>
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+
+
+
+
+<!-- TICKET BOOKING -->
+
+
+<div id="ticketModal" class="popup">
+
+
+<div class="popup-content">
+
+
+<span class="close" onclick="closeTicket()">
+
+✖
+
+</span>
+
+
+
+<h2>
+🎟 Book Museum Ticket
+</h2>
+
+
+<input id="visitorName"
+placeholder="Your Name"
+>
+
+
+<input id="visitDate"
+type="date"
+>
+
+
+<input id="visitors"
+type="number"
+placeholder="Number of visitors"
+>
+
+
+
+<button onclick="confirmBooking()">
+
+Confirm Booking
+
+</button>
+
+
+</div>
+
+</div>
+
+
+
+
+
+
+
+
+
+<!-- BOOKINGS -->
+
+
+<div id="bookingModal" class="popup">
+
+
+<div class="popup-content">
+
+
+<span class="close" onclick="closeBookings()">
+
+✖
+
+</span>
+
+
+<h2>
+🎟 Booking History
+</h2>
+
+
+
+<div id="bookingList">
+
+</div>
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+
+
+
+<!-- QUIZ -->
+
+
+<div id="quizModal" class="popup">
+
+
+<div class="popup-content">
+
+
+<span class="close" onclick="closeQuiz()">
+
+✖
+
+</span>
+
+
+<h2>
+🏆 Museum Quiz
+</h2>
+
+
+
+<p id="quizQuestion">
+
+</p>
+
+
+
+<input id="quizAnswer">
+
+
+
+<button onclick="checkAnswer()">
+
+Submit
+
+</button>
+
+
+
+<h3 id="quizResult">
+
+</h3>
+
+
+</div>
+
+</div>
+
+
+
+
+
+
+
+
+
+<!-- REVIEWS -->
+
+
+<section class="section">
+
+
+<h2>
+⭐ Visitor Reviews
+</h2>
+
+
+<textarea
+id="review"
+placeholder="Write your experience..."
+></textarea>
+
+
+<button onclick="addReview()">
+
+Submit Review
+
+</button>
+
+
+
+<div id="reviews">
+
+</div>
+
+
+</section>
+
+
+
+
+
+
+
+
+
+<footer>
+
+<h3>
+Smart Museum Guide
+</h3>
+
+<p>
+Digital Museum Experience
+</p>
+
+</footer>
+
+
+
+
+
+
+
+
+<script src="script.js"></script>
+
+
+</body>
+
+</html>
